@@ -9,6 +9,8 @@ const canvas = document.getElementById("simulationCanvas") as HTMLCanvasElement;
 const canCon = document.getElementById("canvasContainer") as HTMLDivElement;
 const ctx = canvas.getContext("2d")!;
 
+const SUB_STEPS = 1;
+
 let lastStamp: number;
 let oldHeight: number, winWidth: number;
 const mainLoop: FrameRequestCallback = (timestamp) => {
@@ -30,7 +32,10 @@ const mainLoop: FrameRequestCallback = (timestamp) => {
   const dt = timestamp - lastStamp;
   lastStamp = timestamp;
 
-  update(dt / 1000);
+  //sub steps
+  for (let i = 0; i < SUB_STEPS; i++) {
+    update(dt / 1000 / SUB_STEPS);
+  }
   draw();
 };
 
@@ -43,23 +48,29 @@ let objects: PhysicCircle[];
 let centerObject: PhysicCircle;
 
 function init() {
-  (window as any).objects = objects = [...Array(20)].map(
-    () =>
-      //should generate in a circle instead
-      new PhysicCircle(
+  (window as any).objects = objects = [...Array(20)].map(() =>
+    //should generate in a circle instead
+    {
+      const radius = Math.random() * 45 + 5;
+      return new PhysicCircle(
+        //position
         {
           x: Math.random() * 800 - 400,
           y: Math.random() * 800 - 400,
         },
-        {
-          x: Math.random() * 100 - 50,
-          y: Math.random() * 100 - 50,
-        },
-        Math.random() * 45 + 5
-      )
+        //size
+        Math.PI * radius ** 2
+      );
+    }
   );
 
-  centerObject = new PhysicCircle({ x: 0, y: 0 }, undefined, 50, "orange");
+  centerObject = new PhysicCircle(
+    { x: 0, y: 0 },
+    100000,
+    undefined,
+    50,
+    "orange"
+  );
 }
 
 function update(dt: number) {
