@@ -2,6 +2,8 @@ import { Camera, Vector2 } from "./camera";
 import { drawCircle } from "./main";
 
 export class PhysicCircle {
+  public selected = false;
+  public name = "PhysicCircle";
   constructor(
     public position: Vector2,
     public mass: number,
@@ -11,7 +13,14 @@ export class PhysicCircle {
   ) {}
 
   draw(cam: Camera) {
-    drawCircle(cam, this.position, this.radius, this.color);
+    drawCircle(
+      cam,
+      this.position,
+      this.radius,
+      this.selected ? "red" : this.color,
+      "black",
+      1
+    );
   }
   update(dt: number) {
     this.position.x += this.speed.x * dt;
@@ -27,6 +36,7 @@ export class PhysicCircle {
 
     //bump when too close
     if (dist < this.radius + obj.radius) {
+      // this shit is wrong
       // this.speed.x = -this.speed.x;
       // this.speed.y = -this.speed.y;
       return;

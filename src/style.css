@@ -11,11 +11,26 @@ body {
   border-bottom: 1px solid #555;
   font-size: 30px;
   padding: 5px;
+  display: flex;
+}
+#infoBar > span.title {
+  flex: 1;
 }
 #canvasContainer {
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 #simulationCanvas {
   background: black;
+}
+#infoMenu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  background: #666c;
+  text-align: right;
+  white-space: pre-wrap;
+  display: none;
 }

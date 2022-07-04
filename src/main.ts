@@ -7,10 +7,12 @@ export type Ctx = CanvasRenderingContext2D;
 const infoBar = document.getElementById("infoBar") as HTMLDivElement;
 const canvas = document.getElementById("simulationCanvas") as HTMLCanvasElement;
 const canCon = document.getElementById("canvasContainer") as HTMLDivElement;
+const infoMenu = document.getElementById("infoMenu") as HTMLDivElement;
 const ctx = canvas.getContext("2d")!;
 
-const SUB_STEPS = 1;
+const SUB_STEPS = 10;
 
+let speedScale = 2;
 let lastStamp: number;
 let oldHeight: number, winWidth: number;
 const mainLoop: FrameRequestCallback = (timestamp) => {
@@ -34,7 +36,7 @@ const mainLoop: FrameRequestCallback = (timestamp) => {
 
   //sub steps
   for (let i = 0; i < SUB_STEPS; i++) {
-    update(dt / 1000 / SUB_STEPS);
+    update((dt / 1000 / SUB_STEPS) * speedScale);
   }
   draw();
 };
@@ -43,34 +45,71 @@ requestAnimationFrame(mainLoop);
 
 //-------------------------------------
 
+const PLANET_RADIUS = 50;
+const OBJECT_COUNT = 100;
+
 const cam = new Camera(ctx, { x: 300, y: 300 });
 let objects: PhysicCircle[];
 let centerObject: PhysicCircle;
+let selectedObject: PhysicCircle | undefined;
 
 function init() {
-  (window as any).objects = objects = [...Array(20)].map(() =>
-    //should generate in a circle instead
-    {
-      const radius = Math.random() * 45 + 5;
-      return new PhysicCircle(
-        //position
-        {
-          x: Math.random() * 800 - 400,
-          y: Math.random() * 800 - 400,
-        },
-        //size
-        Math.PI * radius ** 2
-      );
-    }
-  );
-
   centerObject = new PhysicCircle(
     { x: 0, y: 0 },
-    100000,
+    Math.PI * PLANET_RADIUS ** 2,
     undefined,
-    50,
+    PLANET_RADIUS,
     "orange"
   );
+  centerObject.name = "The Center Object";
+
+  (window as any).objects = objects = [...Array(OBJECT_COUNT)].map((_, i) => {
+    const angle = /*Math.random()*/ (i / OBJECT_COUNT) * Math.PI * 2;
+    const radius = 30; //Math.random() * 45 + 5;
+    const min = PLANET_RADIUS + radius + 5;
+    const dist = 300; //Math.random() * (400 - min) + min;
+    return new PhysicCircle(
+      //position
+      { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist },
+      //size
+      Math.PI * radius ** 2,
+      {
+        x: Math.cos(angle + Math.PI / 2) * 50,
+        y: Math.sin(angle + Math.PI / 2) * 30,
+      }
+    );
+  });
+
+  //event
+  canvas.addEventListener("click", (evt) => {
+    const pos = cam.unproject({ x: evt.offsetX, y: evt.offsetY });
+    if (evt.shiftKey) {
+      objects.push(new PhysicCircle(pos, 1, undefined, 25, "#ffc"));
+      return;
+    }
+
+    if (selectedObject) {
+      infoMenu.style.display = "none";
+      selectedObject.selected = false;
+      selectedObject = undefined;
+    }
+
+    const foundObject = [centerObject, ...objects]
+      .reverse()
+      .find(
+        (obj) =>
+          Math.sqrt(
+            (pos.x - obj.position.x) ** 2 + (pos.y - obj.position.y) ** 2
+          ) < obj.radius
+      );
+
+    if (foundObject) {
+      selectedObject = foundObject;
+      selectedObject.selected = true;
+      infoMenu.style.display = "block";
+      return;
+    }
+  });
 }
 
 function update(dt: number) {
@@ -80,19 +119,42 @@ function update(dt: number) {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   centerObject.draw(cam);
+
   objects.forEach((obj) => obj.draw(cam));
+
+  drawInfoMenu();
+}
+
+function drawInfoMenu() {
+  if (selectedObject) {
+    const { position, speed } = selectedObject;
+    infoMenu.textContent =
+      `[${selectedObject.name}]\n` +
+      `position: X${Math.round(position.x)} Y${Math.round(position.y)}\n` +
+      `speed: X${Math.round(speed.x)} Y${Math.round(speed.y)}\n` +
+      `mass: ${Math.round(selectedObject.mass)}\n` +
+      `radius: ${Math.round(selectedObject.radius)}`;
+  }
 }
 
 export function drawCircle(
   cam: Camera,
   position: Vector2,
   radius: number,
-  fill: string
+  fill: string,
+  strokeColor?: string,
+  strokeWidth?: number
 ) {
   const { x, y } = cam.project(position);
   cam.ctx.beginPath();
   cam.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
   cam.ctx.fillStyle = fill;
   cam.ctx.fill();
+  if (strokeWidth) {
+    cam.ctx.strokeStyle = strokeColor!;
+    cam.ctx.lineWidth = strokeWidth;
+    cam.ctx.stroke();
+  }
 }

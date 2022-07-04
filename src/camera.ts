@@ -11,7 +11,7 @@ export class Camera {
     return { x: this.position.x - x, y: this.position.y - y };
   }
   public unproject({ x, y }: Vector2): Vector2 {
-    return { x: x - this.position.x, y: y - this.position.y };
+    return { x: this.position.x - x, y: this.position.y - y };
   }
 }
 
