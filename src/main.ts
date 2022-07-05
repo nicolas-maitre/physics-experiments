@@ -73,6 +73,7 @@ function init() {
       { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist },
       //size
       Math.PI * radius ** 2,
+      //speed
       {
         x: Math.cos(angle + Math.PI / 2) * 50,
         y: Math.sin(angle + Math.PI / 2) * 30,
