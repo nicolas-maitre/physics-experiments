@@ -1,4 +1,4 @@
-import { Camera, Vector2 } from "./camera";
+import { Camera, vec2Len, Vector2 } from "./camera";
 import { PhysicCircle } from "./PhysicObject";
 import "./style.css";
 
@@ -161,7 +161,9 @@ function drawInfoMenu() {
     infoMenu.textContent =
       `[${selectedObject.name}]\n` +
       `position: X${Math.round(position.x)} Y${Math.round(position.y)}\n` +
-      `speed: X${Math.round(speed.x)} Y${Math.round(speed.y)}\n` +
+      `speed: X${Math.round(speed.x)} Y${Math.round(speed.y)} ➡️ ${Math.round(
+        vec2Len(speed)
+      )}\n` +
       `mass: ${Math.round(selectedObject.mass)}\n` +
       `radius: ${Math.round(selectedObject.radius)}`;
   }

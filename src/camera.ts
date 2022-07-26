@@ -18,3 +18,6 @@ export class Camera {
 export function vec2(x: number, y: number): Vector2 {
   return { x, y };
 }
+export function vec2Len(vector: Vector2): number {
+  return Math.sqrt(vector.x ** 2 + vector.y ** 2);
+}
