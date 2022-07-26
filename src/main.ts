@@ -1,10 +1,9 @@
-import { Camera, vec2, Vector2 } from "./camera";
+import { Camera, Vector2 } from "./camera";
 import { PhysicCircle } from "./PhysicObject";
 import "./style.css";
 
 export type Ctx = CanvasRenderingContext2D;
 
-const infoBar = document.getElementById("infoBar") as HTMLDivElement;
 const canvas = document.getElementById("simulationCanvas") as HTMLCanvasElement;
 const canCon = document.getElementById("canvasContainer") as HTMLDivElement;
 const infoMenu = document.getElementById("infoMenu") as HTMLDivElement;
@@ -70,7 +69,7 @@ function init() {
   (window as any).objects = objects = [...Array(OBJECT_COUNT)].map((_, i) => {
     const angle = /*Math.random()*/ (i / OBJECT_COUNT) * Math.PI * 2;
     const radius = 30; //Math.random() * 45 + 5;
-    const min = PLANET_RADIUS + radius + 5;
+    // const min = PLANET_RADIUS + radius + 5;
     const dist = 300; //Math.random() * (400 - min) + min;
     return new PhysicCircle(
       //position
