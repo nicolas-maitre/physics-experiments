@@ -146,9 +146,9 @@ function draw() {
   centerObject.draw(cam);
 
   //shitty line draw
-  objects.forEach((obj, i) =>
-    drawLine(cam, objects.at(i - 1)!.position, obj.position, "blue")
-  );
+  // objects.forEach((obj, i) =>
+  //   drawLine(cam, objects.at(i - 1)!.position, obj.position, "blue")
+  // );
 
   objects.forEach((obj) => obj.draw(cam));
 
