@@ -1,6 +1,8 @@
-import { Camera, Vector2 } from "./camera";
+import { Camera } from "./camera";
 import { drawCircle } from "./main";
+import { Vector2 } from "./utils";
 
+const GRAVITY_CONST = 5;
 export class PhysicCircle {
   public selected = false;
   public name = "PhysicCircle";
@@ -34,9 +36,9 @@ export class PhysicCircle {
     const distSqu = diffX ** 2 + diffY ** 2;
     const dist = Math.sqrt(distSqu);
 
-    //bump when too close
+    //handle objects too close
     if (dist < this.radius + obj.radius) {
-      // this shit is wrong
+      // this bumping shit is wrong
       // this.speed.x = -this.speed.x;
       // this.speed.y = -this.speed.y;
       return;
@@ -44,12 +46,16 @@ export class PhysicCircle {
 
     const angle = Math.atan2(diffY, diffX);
 
-    const force = 60 * dt * ((obj.mass + this.mass) / distSqu);
+    // f = G * (m1*m2)/d**2
+    const force = GRAVITY_CONST * ((obj.mass * this.mass) / distSqu);
 
-    const accX = Math.cos(angle) * force;
-    const accY = Math.sin(angle) * force;
+    //f = m*a => a = f/m
+    const acceleration = force / this.mass;
 
-    this.speed.x -= accX;
-    this.speed.y -= accY;
+    const accX = Math.cos(angle) * acceleration;
+    const accY = Math.sin(angle) * acceleration;
+
+    this.speed.x -= accX * dt;
+    this.speed.y -= accY * dt;
   }
 }

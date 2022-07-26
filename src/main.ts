@@ -1,6 +1,7 @@
-import { Camera, vec2Len, Vector2 } from "./camera";
+import { Camera } from "./camera";
 import { PhysicCircle } from "./PhysicObject";
 import "./style.css";
+import { sphereVolume, vec2Len, Vector2 } from "./utils";
 
 export type Ctx = CanvasRenderingContext2D;
 
@@ -59,7 +60,7 @@ let selectedObject: PhysicCircle | undefined;
 function init() {
   centerObject = new PhysicCircle(
     { x: 0, y: 0 },
-    Math.PI * PLANET_RADIUS ** 2,
+    sphereVolume(PLANET_RADIUS),
     undefined,
     PLANET_RADIUS,
     "orange"
@@ -68,19 +69,20 @@ function init() {
 
   (window as any).objects = objects = [...Array(OBJECT_COUNT)].map((_, i) => {
     const angle = /*Math.random()*/ (i / OBJECT_COUNT) * Math.PI * 2;
-    const radius = 30; //Math.random() * 45 + 5;
+    const radius = 20; //Math.random() * 45 + 5;
     // const min = PLANET_RADIUS + radius + 5;
     const dist = 300; //Math.random() * (400 - min) + min;
     return new PhysicCircle(
       //position
       { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist },
-      //size
-      Math.PI * radius ** 2,
+      //mass
+      sphereVolume(radius),
       //speed
       {
-        x: Math.cos(angle + Math.PI / 2) * 50,
-        y: Math.sin(angle + Math.PI / 2) * 30,
-      }
+        x: Math.cos(angle + Math.PI / 2) * 100,
+        y: Math.sin(angle + Math.PI / 2) * 60,
+      },
+      radius
     );
   });
 
