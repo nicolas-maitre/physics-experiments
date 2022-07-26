@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Physics</title>
+    
+    <script type="module" crossorigin src="/assets/index.1be9143f.js"></script>
+    <link rel="stylesheet" href="/assets/index.3343c5d2.css">
+  </head>
+  <body>
+    <div id="infoBar">
+      <span class="title">Shitty simulation</span>
+      <div class="control-group">
+        <label for="speedSlider"
+          >Speed: <button id="speedDisplay">100%</button></label
+        >
+        <input
+          id="speedSlider"
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          autocomplete="off"
+        />
+        <!-- step="any"/> -->
+        <label for="speedChkBox">(-)</label>
+        <input id="speedChkBox" type="checkbox" autocomplete="off" />
+      </div>
+      <!-- <div class="control-group">
+        <label for="algoSelect">Generator:</label>
+        <select id="algoSelect"></select>
+        <button id="regenButton">Regen</button>
+      </div> -->
+      <!-- <input type="range" min="0" max="10" step="any" /> -->
+    </div>
+    <div id="canvasContainer">
+      <canvas id="simulationCanvas"></canvas>
+      <div id="infoMenu"></div>
+    </div>
+  </body>
+</html>
