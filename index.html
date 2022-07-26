@@ -5,16 +5,37 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Physics</title>
+    <script defer type="module" src="/src/main.ts"></script>
   </head>
   <body>
     <div id="infoBar">
       <span class="title">Shitty simulation</span>
+      <div class="control-group">
+        <label for="speedSlider"
+          >Speed: <b><span id="speedDisplay">100</span>%</b></label
+        >
+        <input
+          id="speedSlider"
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          autocomplete="off"
+        />
+        <!-- step="any"/> -->
+        <label for="speedChkBox">(-)</label>
+        <input id="speedChkBox" type="checkbox" autocomplete="off" />
+      </div>
+      <!-- <div class="control-group">
+        <label for="algoSelect">Generator:</label>
+        <select id="algoSelect"></select>
+        <button id="regenButton">Regen</button>
+      </div> -->
       <!-- <input type="range" min="0" max="10" step="any" /> -->
     </div>
     <div id="canvasContainer">
       <canvas id="simulationCanvas"></canvas>
       <div id="infoMenu"></div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

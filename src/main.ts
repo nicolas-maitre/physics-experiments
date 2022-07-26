@@ -8,11 +8,15 @@ const infoBar = document.getElementById("infoBar") as HTMLDivElement;
 const canvas = document.getElementById("simulationCanvas") as HTMLCanvasElement;
 const canCon = document.getElementById("canvasContainer") as HTMLDivElement;
 const infoMenu = document.getElementById("infoMenu") as HTMLDivElement;
+const speedSlider = document.getElementById("speedSlider") as HTMLInputElement;
+const speedChkBox = document.getElementById("speedChkBox") as HTMLInputElement;
+const speedDisplay = document.getElementById("speedDisplay") as HTMLSpanElement;
+
 const ctx = canvas.getContext("2d")!;
 
 const SUB_STEPS = 10;
 
-let speedScale = 2;
+let speedScale = 1;
 let lastStamp: number;
 let oldHeight: number, winWidth: number;
 const mainLoop: FrameRequestCallback = (timestamp) => {
@@ -111,6 +115,22 @@ function init() {
       return;
     }
   });
+
+  speedSlider.addEventListener("input", handleSpeedInput);
+  speedChkBox.addEventListener("input", handleSpeedInput);
+  function handleSpeedInput() {
+    const value = parseInt(speedSlider.value);
+    const scaledVal = 100 ** ((value / 100) * 2);
+    updateSpeed(speedChkBox.checked ? -scaledVal : scaledVal);
+  }
+}
+function updateSpeed(speedPercent: number) {
+  speedScale = speedPercent / 100;
+  speedDisplay.textContent = (
+    speedPercent < 20
+      ? Math.floor(speedPercent * 10) / 10
+      : Math.floor(speedPercent)
+  ).toString();
 }
 
 function update(dt: number) {
@@ -122,6 +142,11 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   centerObject.draw(cam);
+
+  //shitty line draw
+  objects.forEach((obj, i) =>
+    drawLine(cam, objects.at(i - 1)!.position, obj.position, "blue")
+  );
 
   objects.forEach((obj) => obj.draw(cam));
 
@@ -138,6 +163,24 @@ function drawInfoMenu() {
       `mass: ${Math.round(selectedObject.mass)}\n` +
       `radius: ${Math.round(selectedObject.radius)}`;
   }
+}
+
+export function drawLine(
+  cam: Camera,
+  pFrom: Vector2,
+  pTo: Vector2,
+  stroke: string,
+  width = 1
+) {
+  const { x: xFrom, y: yFrom } = cam.project(pFrom);
+  const { x: xTo, y: yTo } = cam.project(pTo);
+
+  cam.ctx.beginPath();
+  cam.ctx.moveTo(xFrom, yFrom);
+  cam.ctx.lineTo(xTo, yTo);
+  cam.ctx.strokeStyle = stroke;
+  cam.ctx.lineWidth = width;
+  cam.ctx.stroke();
 }
 
 export function drawCircle(

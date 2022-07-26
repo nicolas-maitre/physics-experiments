@@ -9,11 +9,16 @@ body {
 }
 #infoBar {
   border-bottom: 1px solid #555;
-  font-size: 30px;
   padding: 5px;
   display: flex;
+  gap: 10px;
+}
+.control-group {
+  display: flex;
+  align-items: center;
 }
 #infoBar > span.title {
+  font-size: 30px;
   flex: 1;
 }
 #canvasContainer {
