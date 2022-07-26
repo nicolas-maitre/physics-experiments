@@ -118,6 +118,10 @@ function init() {
 
   speedSlider.addEventListener("input", handleSpeedInput);
   speedChkBox.addEventListener("input", handleSpeedInput);
+  speedDisplay.addEventListener("click", () => {
+    speedSlider.valueAsNumber = 50;
+    handleSpeedInput();
+  });
   function handleSpeedInput() {
     const value = parseInt(speedSlider.value);
     const scaledVal = 100 ** ((value / 100) * 2);
@@ -126,11 +130,10 @@ function init() {
 }
 function updateSpeed(speedPercent: number) {
   speedScale = speedPercent / 100;
-  speedDisplay.textContent = (
-    speedPercent < 20
+  speedDisplay.textContent =
+    (speedPercent < 20
       ? Math.floor(speedPercent * 10) / 10
-      : Math.floor(speedPercent)
-  ).toString();
+      : Math.floor(speedPercent)) + "%";
 }
 
 function update(dt: number) {
